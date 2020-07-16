@@ -39,3 +39,5 @@ Suggests:
     spelling
 VignetteBuilder: knitr
 Language: en-US
+URL: https://github.com/jacobwindsor/SQANTIExplorer
+BugReports: https://github.com/jacobwindsor/SQANTIExplorer/issues
