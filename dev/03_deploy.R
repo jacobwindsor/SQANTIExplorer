@@ -11,8 +11,6 @@
 #### CURRENT FILE: DEPLOY SCRIPT #####
 ######################################
 
-renv::snapshot()
-
 # Test your app
 
 ## Run checks ----
