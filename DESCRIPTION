@@ -23,13 +23,13 @@ Imports:
     tidyr,
     ggplot2,
     dplyr,
-    epivizrChart,
     rtracklayer,
     ggthemr,
     attempt,
     DT,
     glue,
-    htmltools
+    htmltools,
+    Rhtslib
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
@@ -41,3 +41,11 @@ VignetteBuilder: knitr
 Language: en-US
 URL: https://github.com/jacobwindsor/SQANTIExplorer
 BugReports: https://github.com/jacobwindsor/SQANTIExplorer/issues
+bioCViews:
+  Software,
+  AnnotationData,
+  ExperimentData,
+  Workflow  
+SystemRequirements:
+  libbz2-dev,
+  liblzma-dev

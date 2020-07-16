@@ -12,9 +12,9 @@
 ###################################
 
 # Engineering
-renv::restore()
 ## Dependencies ----
 ## Add one line by package you want to add as dependency
+usethis::use_package( "rtracklayer" )
 usethis::use_package( "shinydashboard" )
 usethis::use_package( "plotly" )
 usethis::use_package( "igvShiny" )
@@ -29,7 +29,6 @@ usethis::use_package( "magrittr" )
 usethis::use_package( "tidyr" )
 usethis::use_package( "ggplot2" )
 usethis::use_package( "dplyr" )
-usethis::use_package( "rtracklayer" )
 usethis::use_package( "ggthemr" )
 
 ## Add modules ----
@@ -59,14 +58,14 @@ usethis::use_test( "app" )
 # Documentation
 
 ## Vignette ----
-usethis::use_vignette("SQANTIExplorer")
-devtools::build_vignettes()
+# usethis::use_vignette("SQANTIExplorer")
+# devtools::build_vignettes()
 
 ## Code coverage ----
 ## (You'll need GitHub there)
 usethis::use_github()
-usethis::use_travis()
-usethis::use_appveyor()
+# usethis::use_travis()
+# usethis::use_appveyor()
 
 # You're now set! ----
 # go to dev/03_deploy.R

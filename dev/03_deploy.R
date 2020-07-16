@@ -30,10 +30,30 @@ rhub::check_for_cran()
 
 ## Docker ----
 ## If you want to deploy via a generic Dockerfile
-# golem::add_dockerfile()
+golem::add_dockerfile(
+  output="local.Dockerfile",
+  from = paste0("rocker/shiny-verse:", R.Version()$major, ".", R.Version()$minor),
+  repos=c(
+    CRAN = 'https://bioconductor.org/packages/3.11/bioc',
+    CRAN = 'https://cran.rstudio.com',
+    CRAN = 'https://bioconductor.org/packages/3.11/data/annotation',
+    CRAN = 'https://bioconductor.org/packages/3.11/data/experiment',
+    CRAN = 'https://bioconductor.org/packages/3.10/workflows'
+  )
+)
 
 ## If you want to deploy to ShinyProxy
 # golem::add_dockerfile_shinyproxy()
 
 ## If you want to deploy to Heroku
-golem::add_dockerfile_heroku(repos=c(CRAN = 'https://bioconductor.org/packages/3.11/bioc', CRAN = 'https://cran.rstudio.com'))
+golem::add_dockerfile_heroku(
+  output = "Dockerfile", 
+  from = paste0("rocker/shiny-verse:", R.Version()$major, ".", R.Version()$minor),
+  repos=c(
+    CRAN = 'https://bioconductor.org/packages/3.11/bioc',
+    CRAN = 'https://cran.rstudio.com',
+    CRAN = 'https://bioconductor.org/packages/3.11/data/annotation',
+    CRAN = 'https://bioconductor.org/packages/3.11/data/experiment',
+    CRAN = 'https://bioconductor.org/packages/3.10/workflows'
+  )
+)
