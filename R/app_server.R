@@ -26,6 +26,8 @@ ggthemr(
   )
 )
 
+golem::add_resource_path("temp_beds", "inst/app/www/temp_beds")
+
 #' The application server-side
 #' 
 #' @param input,output,session Internal parameters for {shiny}. 
@@ -288,12 +290,9 @@ app_server <- function( input, output, session ) {
     if(input$render_igv > 0) {
       isolate({
         igvShiny::loadGenome(session, list(genomeName = genome_name()))
-        bed_file_name <- "temp_beds/temp.gff"
-        as_url <- bed_file_name
-        print(as_url)
-        write_isoforms(data_to_view(), bed_file_name, "gff", cut=TRUE)
+        write_isoforms(data_to_view(), "inst/app/www/temp_beds/temp.gff", "gff", cut=TRUE)
         print("written")
-        igvShiny::loadGffTrackUrl(session, trackName = input$dataset_choice, url = as_url, deleteTracksOfSameName=FALSE, color = "red")
+        igvShiny::loadGffTrackUrl(session, trackName = input$dataset_choice, url = "temp_beds/temp.gff", deleteTracksOfSameName=FALSE, color = "red")
       })   
     }
   })
