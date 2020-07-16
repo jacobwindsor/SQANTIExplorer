@@ -8,7 +8,6 @@ RUN Rscript -e 'remotes::install_version("processx",upgrade="never", version = "
 RUN Rscript -e 'remotes::install_version("htmlwidgets",upgrade="never", version = "1.5.1")'
 RUN Rscript -e 'remotes::install_version("shinydashboard",upgrade="never", version = "0.7.1")'
 RUN Rscript -e 'remotes::install_version("plotly",upgrade="never", version = "4.9.2.1")'
-RUN Rscript -e 'remotes::install_version("igvShiny",upgrade="never", version = "0.99.83")'
 RUN Rscript -e 'remotes::install_version("shinycssloaders",upgrade="never", version = "0.3")'
 RUN Rscript -e 'remotes::install_version("readr",upgrade="never", version = "1.3.1")'
 RUN Rscript -e 'remotes::install_version("purrr",upgrade="never", version = "0.3.4")'
@@ -29,6 +28,7 @@ RUN Rscript -e 'remotes::install_version("knitr",upgrade="never", version = "1.2
 RUN Rscript -e 'remotes::install_version("rmarkdown",upgrade="never", version = "2.3")'
 RUN Rscript -e 'remotes::install_version("spelling",upgrade="never", version = "2.1")'
 RUN Rscript -e 'remotes::install_github("Thinkr-open/golem@d3cfeabb97cdd93b3ddd294fc3384701db3dcfdc")'
+RUN Rscript -e 'remotes::install_github("jacobwindsor/igvShiny@9c7f4b0887cc102b2c529707cff4d77d88d1cdfa")'
 RUN Rscript -e 'remotes::install_github("cttobin/ggthemr@10eb50a78047e1eb0b9517004f9f7fc34702f539")'
 RUN mkdir /build_zone
 ADD . /build_zone
