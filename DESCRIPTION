@@ -1,0 +1,41 @@
+Package: SQANTIExplorer
+Title: SQANTI Explorer
+Version: 0.0.0.9000
+Authors@R: person('Jacob', 'Windsor', email = 'me@jcbwndsr.com', role = c('cre', 'aut'))
+Description: Explore SQANTI classification files.
+License: MIT + file LICENSE
+Imports: 
+    config,
+    golem,
+    shiny,
+    processx,
+    htmlwidgets,
+    shinydashboard,
+    plotly,
+    igvShiny,
+    shinycssloaders,
+    readr,
+    purrr,
+    tibble,
+    fs,
+    stringr,
+    magrittr,
+    tidyr,
+    ggplot2,
+    dplyr,
+    epivizrChart,
+    rtracklayer,
+    ggthemr,
+    attempt,
+    DT,
+    glue,
+    htmltools
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Suggests: 
+    knitr,
+    rmarkdown,
+    spelling
+VignetteBuilder: knitr
+Language: en-US
