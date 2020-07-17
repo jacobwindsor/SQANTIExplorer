@@ -27,7 +27,6 @@ ggthemr(
 )
 
 golem::add_resource_path("temp_beds", "inst/app/www/temp_beds")
-
 #' The application server-side
 #' 
 #' @param input,output,session Internal parameters for {shiny}. 
@@ -256,7 +255,7 @@ app_server <- function( input, output, session ) {
       ggplot(., aes_string(x="name", y="log_gene_exp", fill=input$groupBy, customdata=input$groupBy)) +
       geom_violin(position=position_dodge(0.9), stat="ydensity", trim = TRUE) +
       geom_boxplot(width = 0.15, position=position_dodge(0.9), outlier.shape=NA, ) +
-      xlab("Species") + ylab("Log(TPM)") + scale_fill_locuszoom()
+      xlab("Species") + ylab("Log(TPM)")
   })
   
   output$selected_transcript_count <- renderValueBox({
@@ -281,8 +280,7 @@ app_server <- function( input, output, session ) {
   
   output$igv <- renderIgvShiny({
     igvShiny(list(
-      genomeName="hg19",
-      initialLocus="chr1:7,063,368-14,852,449"
+      genomeName="hg19"
     ))
   })
   
@@ -291,7 +289,6 @@ app_server <- function( input, output, session ) {
       isolate({
         igvShiny::loadGenome(session, list(genomeName = genome_name()))
         write_isoforms(data_to_view(), "inst/app/www/temp_beds/temp.gff", "gff", cut=TRUE)
-        print("written")
         igvShiny::loadGffTrackUrl(session, trackName = input$dataset_choice, url = "temp_beds/temp.gff", deleteTracksOfSameName=FALSE, color = "red")
       })   
     }

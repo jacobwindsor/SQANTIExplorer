@@ -1,5 +1,5 @@
 # Set options here
-options(golem.app.prod = FALSE, shiny.autoreload=TRUE, shiny.maxRequestSize = 300*1024^2) # TRUE = production mode, FALSE = development mode
+options(golem.app.prod = FALSE, shiny.autoreload=TRUE) # TRUE = production mode, FALSE = development mode
 
 # Detach all loaded packages and clean your environment
 golem::detach_all_attached()
