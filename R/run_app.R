@@ -1,4 +1,4 @@
-options(shiny.maxRequestSize = 300*1024^2)
+options(shiny.maxRequestSize = 300*1024^2, spinner.color="#2470F0")
 
 #' Run the Shiny Application
 #'
@@ -14,7 +14,7 @@ run_app <- function(
     app = shinyApp(
       ui = app_ui, 
       server = app_server,
-      options = list(shiny.maxRequestSize = 300*1024^2, spinner.color=color_secondary,...)
+      options = list()
     ), 
     golem_opts = list(...)
   )

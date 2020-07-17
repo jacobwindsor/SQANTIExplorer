@@ -1,5 +1,5 @@
 FROM rocker/shiny-verse:4.0.2
-RUN apt-get update && apt-get install -y  git-core libcurl4-openssl-dev libgit2-dev libssh2-1-dev libssl-dev libxml2-dev make pandoc pandoc-citeproc zlib1g-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y  git-core libcurl4-openssl-dev libgit2-dev libssh2-1-dev libssl-dev libxml2-dev libbz2-dev liblzma-dev make pandoc pandoc-citeproc zlib1g-dev && rm -rf /var/lib/apt/lists/*
 RUN echo "options(repos = c(CRAN = 'https://bioconductor.org/packages/3.11/bioc', CRAN = 'https://cran.rstudio.com', CRAN = 'https://bioconductor.org/packages/3.11/data/annotation', CRAN = 'https://bioconductor.org/packages/3.11/data/experiment', CRAN = 'https://bioconductor.org/packages/3.10/workflows'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
 RUN R -e 'install.packages("remotes")'
 RUN Rscript -e 'remotes::install_version("config",upgrade="never", version = "0.3")'
