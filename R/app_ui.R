@@ -33,7 +33,8 @@ app_ui <- function(request) {
                          checkboxInput("allCanonical", "All Canonical SJs"),
                          checkboxInput("minCovGTZero", "min_cov > 0"),
                          checkboxInput("onlyGenes", "Only Genes (does not accumulate values from transcripts)"),
-                         uiOutput("updateButton")
+                         uiOutput("updateButton"),
+                         bookmarkButton()
                        )
       ),
       dashboardBody(

@@ -28,7 +28,7 @@ RUN Rscript -e 'remotes::install_version("knitr",upgrade="never", version = "1.2
 RUN Rscript -e 'remotes::install_version("rmarkdown",upgrade="never", version = "2.3")'
 RUN Rscript -e 'remotes::install_version("spelling",upgrade="never", version = "2.1")'
 RUN Rscript -e 'remotes::install_github("thinkr-open/golem@23e3ffe5f82d57989c2a97d818895cc60c38bdc4")'
-RUN Rscript -e 'remotes::install_github("jacobwindsor/igvShiny@9c7f4b0887cc102b2c529707cff4d77d88d1cdfa")'
+RUN Rscript -e 'remotes::install_github("jacobwindsor/igvShiny@4a9a54fb024c9ab619a757ca01abac665253709a")'
 RUN Rscript -e 'remotes::install_github("cttobin/ggthemr@10eb50a78047e1eb0b9517004f9f7fc34702f539")'
 RUN mkdir /build_zone
 ADD . /build_zone
