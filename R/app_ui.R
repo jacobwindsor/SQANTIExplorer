@@ -50,7 +50,7 @@ app_ui <- function(request) {
                       selectInput("genome", label="Genome: ", choices=igvShiny::getSupportedGenomes()),
                       actionButton("addClassification", label = "Add Classification File")
                     ),
-                    box(title = "Your Inputs", withSpinner(tableOutput('inputTable')), downloadButton("downloadData", "Download Data")),
+                    box(title = "Your Inputs", withSpinner(DT::dataTableOutput('inputTable')), downloadButton("downloadData", "Download Data")),
                   )
           ),
           tabItem(tabName="plots",
@@ -72,7 +72,10 @@ app_ui <- function(request) {
                     ),
                     column(width=8,
                            tabBox(width=NULL,title = "Plot",height = 500,
-                                  tabPanel("Summary", withSpinner(plotlyOutput("pie_chart"))),
+                                  tabPanel("Summary",
+                                           withSpinner(plotlyOutput("pie_chart")),
+                                           p("Hover over segments to see raw counts.")
+                                  ),
                                   tabPanel("Basic Count", withSpinner(plotlyOutput("count_plot"))),
                                   tabPanel("Basic %", withSpinner(plotlyOutput("perc_plot"))),
                                   tabPanel("% Monoexonic", withSpinner(plotlyOutput("mono_plot"))),

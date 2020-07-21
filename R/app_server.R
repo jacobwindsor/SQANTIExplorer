@@ -66,7 +66,6 @@ app_server <- function( input, output, session ) {
   observeEvent(input$addClassification, {
     req(input$classification_file, input$gtf_file, input$name)
     
-    
     if(input$addClassification > 0) {
       isolate({
         datapath <- input$classification_file[["datapath"]]
@@ -95,7 +94,7 @@ app_server <- function( input, output, session ) {
   
   data_to_plot <- reactive({
     validate(
-      need(classifications(), "Please add a classification file.")
+      need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
     )
     val <- classifications() %>% group_by_at(c("name", input$groupBy))
     
@@ -138,16 +137,31 @@ app_server <- function( input, output, session ) {
       filter(name %in% sort(unique(data_to_plot()$name))[d$pointNumber + 1])
   })
   
-  output$inputTable <- renderTable({
+  output$inputTable <-  DT::renderDataTable(DT::datatable({
     validate(
-      need(classifications(), "Please add a classification file.")
+      need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
     )
-    classifications() %>% select(name, file) %>% distinct(name, .keep_all = TRUE)
+    classifications() %>% 
+      select(name, file) %>% 
+      distinct(name, .keep_all = TRUE) %>%
+      mutate(delete = purrr::pmap(list(name), ~ as.character(
+        actionButton(
+          paste(.x), label = NULL, icon = icon('trash'),
+          onclick = 'Shiny.setInputValue(\"deletePressed\",  this.id, {priority: "event"})')
+        )
+      ))
+  }, escape=FALSE))
+  
+  observeEvent(input$deletePressed,{
+    print(input$deletePressed)
+    classifications(
+      classifications() %>% filter(name != input$deletePressed)
+    )
   })
   
   output$pie_chart <- renderPlotly({
     validate(
-      need(classifications(), "Please add a classification file.")
+      need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
     )
     count_times = 0
     
