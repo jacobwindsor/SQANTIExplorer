@@ -183,6 +183,25 @@ jq_hide <- function(id) {
   tags$script(sprintf("$('#%s').hide()", id))
 }
 
+jq_visible <- function(id) {
+  tags$script(sprintf("$('#%s').css('visibility', 'visible')", id))
+}
+
+jq_invisible <- function(id) {
+  tags$script(sprintf("$('#%s').css('visibility', 'hidden')", id))
+}
+
+#' Show an elements by calling jquery show on it
+#' 
+#' @param id the id of the element to show
+#' 
+#' @noRd
+#' 
+#' @importFrom htmltools tags
+jq_show <- function(id) {
+  tags$script(sprintf("$('#%s').show()", id))
+}
+
 #' Add a red star at the end of the text
 #'
 #' Adds a red star at the end of the text

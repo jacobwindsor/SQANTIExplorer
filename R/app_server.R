@@ -45,16 +45,17 @@ app_server <- function( input, output, session ) {
     )
   )
   options(shiny.maxRequestSize = 300*1024^2, spinner.color="#2470F0")
+  
   classifications <- reactiveVal()
   
   if(golem::app_dev()) {
     classifications(tibble(
-      name = get_golem_config("test_name"),
-      file = get_golem_config("test_file"),
-      gtf_path = get_golem_config("test_gtf"),
-      genome = get_golem_config("test_genome"),
-      path = get_golem_config("test_classification"),
-      classification = list(read_tsv(get_golem_config("test_classification")))) %>%
+      name = "Sample human",
+      file = "Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt",
+      gtf_path = "/home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_corrected.gtf",
+      genome = "hg38",
+      path = "/home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt",
+      classification = list(read_tsv("/home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt"))) %>%
         unnest(cols=c(classification)) %>%
         mutate(polyexonic = if_else(exons > 1, "Polyexonic", "Monoexonic")) %>%
         mutate(novel_transcript = if_else(associated_transcript == "novel", "Novel", "Annotated")) %>%
@@ -62,10 +63,9 @@ app_server <- function( input, output, session ) {
         mutate(log_gene_exp = log(gene_exp + 0.01)))
   }
   
-  makeReactiveBinding("classifications")
-  
   observeEvent(input$addClassification, {
     req(input$classification_file, input$gtf_file, input$name)
+    
     
     if(input$addClassification > 0) {
       isolate({
@@ -275,22 +275,72 @@ app_server <- function( input, output, session ) {
     selectInput("dataset_choice", "Select Data To Visualize: ", choices = classifications() %>% distinct(name) %>% pull(name))
   })
   
-  data_to_view <- reactive(data_to_plot() %>% ungroup() %>% filter(name == input$dataset_choice))
+  output$updateButton <- renderUI({
+    if(input$tabs == "browser") {
+      return(
+        tagList(
+          hr(),
+          actionButton("refreshIgv", "Update Genome Browser", icon= icon("sync"))
+        )
+      )
+    }
+    
+    hr()
+  })
+  
+  data_to_view <- reactive({
+    validate(
+      need(classifications(), "Please add at least one dataset."),
+      need(input$dataset_choice, "Please select a dataset.")
+    )
+    data_to_plot() %>% ungroup() %>% filter(name == input$dataset_choice)
+  })
+  
   genome_name <- reactive(data_to_view() %>% distinct(genome) %>% dplyr::first())
   
   output$igv <- renderIgvShiny({
-    igvShiny(list(
-      genomeName="hg19",
-      initialLocus="chr1:7,063,368-14,852,449"
-    ))
+     igvShiny(list(
+       genomeName="hg38",
+       initialLocus="all"
+     ))
   })
   
-  observeEvent(input$render_igv, {
-    if(input$render_igv > 0) {
+  refresh_igv <- function(region) {
+    print(pull(count(data_to_view()), n))
+    if(pull(count(data_to_view()), n) == 0) {
+      golem::invoke_js("showid", "error_igv_msg")
+      golem::invoke_js("make_invisible", "igv")
+    }
+    else {
+      golem::invoke_js("hideid", "error_igv_msg")
+      golem::invoke_js("make_visible", "igv")
+      write_isoforms(data_to_view(), "inst/app/www/temp_beds/temp.gff", "gff", cut=TRUE)
+      igvShiny::loadGffTrackUrl(
+        session,
+        trackName = input$dataset_choice,
+        url = "temp_beds/temp.gff",
+        deleteTracksOfSameName=TRUE,
+        color = color_secondary)
+      igvShiny::showGenomicRegion(session, region)
+    }
+  }
+  
+  observeEvent(input$renderIgv, {
+    if(input$renderIgv == 1) {
+      golem::invoke_js("hideid", "load_genome_msg")
+      golem::invoke_js("make_visible", "igv")
+    }
+    if(input$renderIgv > 0) {
+      igvShiny::loadGenome(session, list(genomeName = data_to_view() %>% distinct(genome) %>% dplyr::first()))
+      refresh_igv("all")
+    }
+  })
+  
+  observeEvent(input$refreshIgv, {
+    if(input$refreshIgv > 0) {
       isolate({
-        igvShiny::loadGenome(session, list(genomeName = genome_name()))
-        write_isoforms(data_to_view(), "inst/app/www/temp_beds/temp.gff", "gff", cut=TRUE)
-        igvShiny::loadGffTrackUrl(session, trackName = input$dataset_choice, url = "temp_beds/temp.gff", deleteTracksOfSameName=FALSE, color = "red")
+        igvShiny::getGenomicRegion(session)
+        refresh_igv(input$currentGenomicRegion)
       })   
     }
   })

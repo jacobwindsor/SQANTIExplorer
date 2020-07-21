@@ -20,7 +20,7 @@ app_ui <- function(request) {
       
       # Sidebar with a slider input for number of bins
       dashboardSidebar(width=350,
-                       sidebarMenu(
+                       sidebarMenu(id="tabs",
                          menuItem("Data", tabName="data", icon=icon("database")),
                          menuItem("Plots", tabName="plots", icon=icon("chart-bar")),
                          menuItem("Genome Browser", tabName = "browser", icon=icon("dna")),
@@ -32,7 +32,8 @@ app_ui <- function(request) {
                          checkboxInput("noIntraPriming", "No intra-priming"),
                          checkboxInput("allCanonical", "All Canonical SJs"),
                          checkboxInput("minCovGTZero", "min_cov > 0"),
-                         checkboxInput("onlyGenes", "Only Genes (does not accumulate values from transcripts)")
+                         checkboxInput("onlyGenes", "Only Genes (does not accumulate values from transcripts)"),
+                         uiOutput("updateButton")
                        )
       ),
       dashboardBody(
@@ -86,9 +87,34 @@ app_ui <- function(request) {
           tabItem(tabName="browser",
                   fluidRow(box(width=12,
                                uiOutput("selectGenomeData"),
-                               actionButton("render_igv", "Render")
+                               actionButton("renderIgv", "Show Sample"),
                   )),
-                  fluidRow(box(width=12,title = "Genome Browser", withSpinner(igvShinyOutput("igv"))))
+                  fluidRow(
+                    id="load_genome_msg",
+                    box(
+                      width=12,
+                      p("Please select a sample.")
+                    )
+                  ),
+                  fluidRow(
+                    id="error_igv_msg",
+                    style="display:none",
+                    box(
+                      width=12,
+                      p("No data for IGV. Make sure your filters don't remove all data.")
+                    )
+                  ),
+                  fluidRow(
+                    id="igv",
+                    style="visibility:hidden; overflow:hidden",
+                    box(
+                      width=12,
+                      height="700px",
+                      style="overflow-y: scroll; height:650px",
+                      title="Genome Browser",
+                      withSpinner(igvShinyOutput("igv"))
+                    )
+                  ),
           )
         ),
       )
