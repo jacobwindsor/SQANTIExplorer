@@ -306,14 +306,14 @@ app_server <- function( input, output, session ) {
   })
   
   refresh_igv <- function(region) {
-    print(pull(count(data_to_view()), n))
     if(pull(count(data_to_view()), n) == 0) {
       golem::invoke_js("showid", "error_igv_msg")
       golem::invoke_js("make_invisible", "igv")
     }
     else {
       golem::invoke_js("hideid", "error_igv_msg")
-      golem::invoke_js("make_visible", "igv")
+      golem::invoke_js("make_invisible", "igv")
+      golem::invoke_js("showid", "igv_loading")
       write_isoforms(data_to_view(), "inst/app/www/temp_beds/temp.gff", "gff", cut=TRUE)
       igvShiny::loadGffTrackUrl(
         session,
@@ -322,13 +322,14 @@ app_server <- function( input, output, session ) {
         deleteTracksOfSameName=TRUE,
         color = color_secondary)
       igvShiny::showGenomicRegion(session, region)
+      golem::invoke_js("make_visible", "igv")
+      golem::invoke_js("hideid", "igv_loading")
     }
   }
   
   observeEvent(input$renderIgv, {
     if(input$renderIgv == 1) {
       golem::invoke_js("hideid", "load_genome_msg")
-      golem::invoke_js("make_visible", "igv")
     }
     if(input$renderIgv > 0) {
       igvShiny::loadGenome(session, list(genomeName = data_to_view() %>% distinct(genome) %>% dplyr::first()))

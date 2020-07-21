@@ -105,6 +105,14 @@ app_ui <- function(request) {
                     )
                   ),
                   fluidRow(
+                    id="igv_loading",
+                    style="display:none",
+                    box(
+                      width=12,
+                      withSpinner(uiOutput("spinnerDummyID1"))
+                    )
+                  ),
+                  fluidRow(
                     id="igv",
                     style="visibility:hidden; overflow:hidden",
                     box(
