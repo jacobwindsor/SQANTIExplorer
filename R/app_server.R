@@ -1,32 +1,3 @@
-require(ggplot2)
-require(ggthemr)
-# THEMING
-# ======
-color_primary <- "#EF543B"
-color_primary_dark <- "#B03E2C"
-color_primary_light <- "#FF9170"
-color_secondary <- "#2470F0"
-color_secondary_dark <- "#1A51B0" 
-color_secondary_light <- "#5891FF"
-color_alert <- "#F0DD54" 
-
-# ggplot
-ggthemr(
-  define_palette(
-    swatch = structure(
-      c(
-        
-        color_primary_light, color_secondary, 
-        color_primary, color_primary_dark,
-        color_secondary_light, color_secondary_dark
-      )
-    ),
-    gradient = c(lower=color_primary_light, upper=color_primary_dark),
-    background = '#ecf0f1'
-  )
-)
-
-golem::add_resource_path("temp_beds", "inst/app/www/temp_beds")
 #' The application server-side
 #' 
 #' @param input,output,session Internal parameters for {shiny}. 
@@ -42,24 +13,54 @@ golem::add_resource_path("temp_beds", "inst/app/www/temp_beds")
 #' @import dplyr
 #' @import rtracklayer
 #' @import shinycssloaders
+#' @import ggplot2
+#' @import ggthemr
 #' @noRd
 app_server <- function( input, output, session ) {
-  # List the first level callModules here
-  # TODO: REMOVE INITIAL VALUE WHEN DONE TESTING
-  # classifications <- reactiveVal(value = tibble(
-  #   name = "Sample human",
-  #   file = "Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt",
-  #   gtf_path = "/home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_corrected.gtf",
-  #   genome = "hg38",
-  #   path = "/home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt",
-  #   classification = list(read_tsv("/home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt"))) %>%
-  #     unnest(cols=c(classification)) %>%
-  #     mutate(polyexonic = if_else(exons > 1, "Polyexonic", "Monoexonic")) %>%
-  #     mutate(novel_transcript = if_else(associated_transcript == "novel", "Novel", "Annotated")) %>%
-  #     mutate(novel_gene = if_else(grepl("novelGene", associated_gene), "Novel", "Annotated")) %>%
-  #     mutate(log_gene_exp = log(gene_exp + 0.01)))
+  golem::add_resource_path("temp_beds", "inst/app/www/temp_beds")
   
+  # THEMING
+  # ======
+  color_primary <- "#EF543B"
+  color_primary_dark <- "#B03E2C"
+  color_primary_light <- "#FF9170"
+  color_secondary <- "#2470F0"
+  color_secondary_dark <- "#1A51B0" 
+  color_secondary_light <- "#5891FF"
+  color_alert <- "#F0DD54" 
+  
+  # ggplot
+  ggthemr(
+    define_palette(
+      swatch = structure(
+        c(
+          
+          color_primary_light, color_secondary, 
+          color_primary, color_primary_dark,
+          color_secondary_light, color_secondary_dark
+        )
+      ),
+      gradient = c(lower=color_primary_light, upper=color_primary_dark),
+      background = '#ecf0f1'
+    )
+  )
+  options(shiny.maxRequestSize = 300*1024^2, spinner.color="#2470F0")
   classifications <- reactiveVal()
+  
+  if(golem::app_dev()) {
+    classifications(value = tibble(
+      name = golem::get_golem_config("test_name"),
+      file = golem::get_golem_config("test_file"),
+      gtf_path = golem::get_golem_config("test_gtf"),
+      genome = golem::get_golem_config("test_genome"),
+      path = golem::get_golem_config("test_classification"),
+      classification = list(read_tsv(golem::get_golem_config("test_classification")))) %>%
+        unnest(cols=c(classification)) %>%
+        mutate(polyexonic = if_else(exons > 1, "Polyexonic", "Monoexonic")) %>%
+        mutate(novel_transcript = if_else(associated_transcript == "novel", "Novel", "Annotated")) %>%
+        mutate(novel_gene = if_else(grepl("novelGene", associated_gene), "Novel", "Annotated")) %>%
+        mutate(log_gene_exp = log(gene_exp + 0.01)))
+  }
   
   makeReactiveBinding("classifications")
   
@@ -280,7 +281,8 @@ app_server <- function( input, output, session ) {
   
   output$igv <- renderIgvShiny({
     igvShiny(list(
-      genomeName="hg19"
+      genomeName="hg19",
+      initialLocus="chr1:7,063,368-14,852,449"
     ))
   })
   

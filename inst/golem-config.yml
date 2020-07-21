@@ -2,7 +2,12 @@ default:
   golem_name: SQANTIExplorer
   golem_version: 0.0.0.9000
   app_prod: no
+  test_name: Sample Human
+  test_file: Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt
+  test_gtf: /home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_corrected.gtf
+  test_genome: hg38
+  test_classification: /home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt
 production:
   app_prod: yes
 dev:
-  golem_wd: !expr here::here()
+  golem_wd: /home/jacob/projects/SQANTIExplorer

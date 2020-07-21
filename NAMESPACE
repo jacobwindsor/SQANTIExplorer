@@ -3,6 +3,8 @@
 export(run_app)
 import(dplyr)
 import(fs)
+import(ggplot2)
+import(ggthemr)
 import(htmlwidgets)
 import(igvShiny)
 import(magrittr)

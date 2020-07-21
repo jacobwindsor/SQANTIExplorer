@@ -7,6 +7,7 @@ require(tidyr)
 require(stringr)
 require(tibble)
 require(readr)
+require(ggthemr)
 
 #' Inverted versions of in, is.null and is.na
 #' 

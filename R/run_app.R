@@ -1,5 +1,3 @@
-options(shiny.maxRequestSize = 300*1024^2, spinner.color="#2470F0")
-
 #' Run the Shiny Application
 #'
 #' @param ... A series of options to be used inside the app.
@@ -7,6 +5,7 @@ options(shiny.maxRequestSize = 300*1024^2, spinner.color="#2470F0")
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
+#' @import ggthemr
 run_app <- function(
   ...
 ) {

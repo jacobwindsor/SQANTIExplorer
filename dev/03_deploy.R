@@ -30,6 +30,7 @@ rhub::check_for_cran()
 ## If you want to deploy via a generic Dockerfile
 golem::add_dockerfile(
   output="local.Dockerfile",
+  extra_sysreqs = c("libbz2-dev","liblzma-dev"),
   from = paste0("rocker/shiny-verse:", R.Version()$major, ".", R.Version()$minor),
   repos=c(
     CRAN = 'https://bioconductor.org/packages/3.11/bioc',
@@ -46,6 +47,7 @@ golem::add_dockerfile(
 ## If you want to deploy to Heroku
 golem::add_dockerfile_heroku(
   output = "Dockerfile", 
+  extra_sysreqs = c("libbz2-dev","liblzma-dev"),
   from = paste0("rocker/shiny-verse:", R.Version()$major, ".", R.Version()$minor),
   repos=c(
     CRAN = 'https://bioconductor.org/packages/3.11/bioc',
