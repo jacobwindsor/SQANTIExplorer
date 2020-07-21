@@ -46,22 +46,7 @@ app_server <- function( input, output, session ) {
   )
   options(shiny.maxRequestSize = 300*1024^2, spinner.color="#2470F0")
   
-  classifications <- reactiveVal()
-  
-  if(golem::app_dev()) {
-    classifications(tibble(
-      name = "Sample human",
-      file = "Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt",
-      gtf_path = "/home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_corrected.gtf",
-      genome = "hg38",
-      path = "/home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt",
-      classification = list(read_tsv("/home/jacob/projects/minorproj/data/frozen_filtered_isoseq/Homo_sapiens.all.collapsed.filtered.rep_classification.txt_filterResults.txt"))) %>%
-        unnest(cols=c(classification)) %>%
-        mutate(polyexonic = if_else(exons > 1, "Polyexonic", "Monoexonic")) %>%
-        mutate(novel_transcript = if_else(associated_transcript == "novel", "Novel", "Annotated")) %>%
-        mutate(novel_gene = if_else(grepl("novelGene", associated_gene), "Novel", "Annotated")) %>%
-        mutate(log_gene_exp = log(gene_exp + 0.01)))
-  }
+  classifications <- reactiveVal(tibble())
   
   observeEvent(input$addClassification, {
     req(input$classification_file, input$gtf_file, input$name)
@@ -94,6 +79,7 @@ app_server <- function( input, output, session ) {
   
   data_to_plot <- reactive({
     validate(
+      need(classifications(), "Please add a classification file."),
       need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
     )
     val <- classifications() %>% group_by_at(c("name", input$groupBy))
@@ -139,6 +125,7 @@ app_server <- function( input, output, session ) {
   
   output$inputTable <-  DT::renderDataTable(DT::datatable({
     validate(
+      need(classifications(), "Please add a classification file."),
       need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
     )
     classifications() %>% 
@@ -153,14 +140,15 @@ app_server <- function( input, output, session ) {
   }, escape=FALSE))
   
   observeEvent(input$deletePressed,{
-    print(input$deletePressed)
     classifications(
+      need(classifications(), "Please add a classification file."),
       classifications() %>% filter(name != input$deletePressed)
     )
   })
   
   output$pie_chart <- renderPlotly({
     validate(
+      need(classifications(), "Please add a classification file."),
       need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
     )
     count_times = 0
@@ -284,7 +272,8 @@ app_server <- function( input, output, session ) {
   
   output$selectGenomeData <- renderUI({
     validate(
-      need(classifications(), "Please add at least one dataset.")
+      need(classifications(), "Please add at least one dataset."),
+      need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
     )
     selectInput("dataset_choice", "Select Data To Visualize: ", choices = classifications() %>% distinct(name) %>% pull(name))
   })

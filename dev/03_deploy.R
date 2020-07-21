@@ -19,6 +19,7 @@ devtools::check()
 rhub::check_for_cran()
 
 # Deploy
+options(golem.app.prod = TRUE)
 
 ## RStudio ----
 ## If you want to deploy on RStudio related platforms
