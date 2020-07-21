@@ -42,13 +42,15 @@ app_ui <- function(request) {
                   fluidRow(
                     box(
                       title="Add Classification Files",
-                      fileInput("classification_file", "Classification File: ", accept = c(".txt")),
-                      fileInput("gtf_file", "GTF (GFF v2) File: ", accept = c(".gtf")),
-                      textInput("name", "Name: "),
+                      fileInput("classification_file", with_red_star("Classification File: "), accept = c(".txt")),
+                      fileInput("gtf_file", with_red_star("GTF (GFF v2) File: "), accept = c(".gtf")),
+                      textInput("name", with_red_star("Name: ")),
                       hr(),
                       h4("Genome (only required for genome browser)"),
                       selectInput("genome", label="Genome: ", choices=igvShiny::getSupportedGenomes()),
-                      actionButton("addClassification", label = "Add Classification File")
+                      actionButton("addClassification", label = "Add Classification File"),
+                      hr(),
+                      with_red_star("required field = ")
                     ),
                     box(title = "Your Inputs", withSpinner(DT::dataTableOutput('inputTable')), downloadButton("downloadData", "Download Data")),
                   )
