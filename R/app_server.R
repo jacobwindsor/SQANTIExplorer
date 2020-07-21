@@ -46,7 +46,7 @@ app_server <- function( input, output, session ) {
   )
   options(shiny.maxRequestSize = 300*1024^2, spinner.color="#2470F0")
   
-  classifications <- reactiveVal(tibble())
+  classifications <- reactiveVal()
   
   observeEvent(input$addClassification, {
     req(input$classification_file, input$gtf_file, input$name)
@@ -78,10 +78,7 @@ app_server <- function( input, output, session ) {
   })
   
   data_to_plot <- reactive({
-    validate(
-      need(classifications(), "Please add a classification file."),
-      need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
-    )
+    validate_classifications(classifications)
     val <- classifications() %>% group_by_at(c("name", input$groupBy))
     
     if (input$polyexonic) {
@@ -124,10 +121,7 @@ app_server <- function( input, output, session ) {
   })
   
   output$inputTable <-  DT::renderDataTable(DT::datatable({
-    validate(
-      need(classifications(), "Please add a classification file."),
-      need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
-    )
+    validate_classifications(classifications)
     classifications() %>% 
       select(name, file) %>% 
       distinct(name, .keep_all = TRUE) %>%
@@ -141,16 +135,12 @@ app_server <- function( input, output, session ) {
   
   observeEvent(input$deletePressed,{
     classifications(
-      need(classifications(), "Please add a classification file."),
       classifications() %>% filter(name != input$deletePressed)
     )
   })
   
   output$pie_chart <- renderPlotly({
-    validate(
-      need(classifications(), "Please add a classification file."),
-      need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
-    )
+    validate_classifications(classifications)
     count_times = 0
     
     get_counts <- function(data, name) {
@@ -271,10 +261,7 @@ app_server <- function( input, output, session ) {
   })
   
   output$selectGenomeData <- renderUI({
-    validate(
-      need(classifications(), "Please add at least one dataset."),
-      need(pull(count(classifications()), "n") > 0, "Please add a classification file.")
-    )
+    validate_classifications(classifications)
     selectInput("dataset_choice", "Select Data To Visualize: ", choices = classifications() %>% distinct(name) %>% pull(name))
   })
   
@@ -292,10 +279,7 @@ app_server <- function( input, output, session ) {
   })
   
   data_to_view <- reactive({
-    validate(
-      need(classifications(), "Please add at least one dataset."),
-      need(input$dataset_choice, "Please select a dataset.")
-    )
+    validate_classifications(classifications)
     data_to_plot() %>% ungroup() %>% filter(name == input$dataset_choice)
   })
   

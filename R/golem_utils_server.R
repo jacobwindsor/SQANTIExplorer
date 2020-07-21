@@ -118,3 +118,15 @@ bar_plot = function(data, input) {
   ggplot(data, aes_string(x="name", y="n", fill=input$groupBy, customdata=input$groupBy)) + geom_bar(position="dodge", stat="identity")
 }
 
+validate_classifications <- function(data) {
+  msg <- "Please add a classification file."
+  if(is.null(data())) {
+    return(validate(
+      need(data(), msg)
+    ))
+  }
+  return(validate(
+    need(data() %>% count() %>% pull("n") > 0, msg),
+    need(data(), msg)
+  ))
+}
