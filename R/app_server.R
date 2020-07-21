@@ -48,13 +48,13 @@ app_server <- function( input, output, session ) {
   classifications <- reactiveVal()
   
   if(golem::app_dev()) {
-    classifications(value = tibble(
-      name = golem::get_golem_config("test_name"),
-      file = golem::get_golem_config("test_file"),
-      gtf_path = golem::get_golem_config("test_gtf"),
-      genome = golem::get_golem_config("test_genome"),
-      path = golem::get_golem_config("test_classification"),
-      classification = list(read_tsv(golem::get_golem_config("test_classification")))) %>%
+    classifications(tibble(
+      name = get_golem_config("test_name"),
+      file = get_golem_config("test_file"),
+      gtf_path = get_golem_config("test_gtf"),
+      genome = get_golem_config("test_genome"),
+      path = get_golem_config("test_classification"),
+      classification = list(read_tsv(get_golem_config("test_classification")))) %>%
         unnest(cols=c(classification)) %>%
         mutate(polyexonic = if_else(exons > 1, "Polyexonic", "Monoexonic")) %>%
         mutate(novel_transcript = if_else(associated_transcript == "novel", "Novel", "Annotated")) %>%
@@ -66,7 +66,6 @@ app_server <- function( input, output, session ) {
   
   observeEvent(input$addClassification, {
     req(input$classification_file, input$gtf_file, input$name)
-    
     
     if(input$addClassification > 0) {
       isolate({
