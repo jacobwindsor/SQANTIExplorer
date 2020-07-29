@@ -17,8 +17,24 @@
 #' @import ggthemr
 #' @noRd
 app_server <- function( input, output, session ) {
-  golem::add_resource_path("temp_beds", "inst/app/www/temp_beds")
+  # Temporary data storage per session
+  # ===================================
+  base_tmp <- "tmp_data"
+  resource_path <- paste0("inst/app/www/", base_tmp, "/")
+  golem::add_resource_path(base_tmp, resource_path)
+  session_hard_tmp <- paste0(resource_path,  session$token, "/") # Where tmp data is actually stored on disk
+  session_public_tmp <- paste0(base_tmp, "/", session$token, "/") # The public URL to the tmp data
+
+  if(!dir.exists(resource_path)) {
+    dir.create(resource_path) 
+  }
+  dir.create(session_hard_tmp)
   
+  session$onSessionEnded(function() {
+    # Remove on session end
+    unlink(session_hard_tmp, recursive=TRUE, force=TRUE)
+  })
+
   # THEMING
   # ======
   color_primary <- "#EF543B"
@@ -363,8 +379,8 @@ app_server <- function( input, output, session ) {
       golem::invoke_js("showid", "igv_loading")
       
       genome_browser_data() %>% group_by(name) %>% group_map(function(group_df, name) {
-        tmp_filename <- paste0("temp_beds/", name, ".gff")
-        write_isoforms(group_df, paste0("inst/app/www/", tmp_filename), "gff", cut=TRUE)
+        tmp_filename <- paste0(session_public_tmp, name, ".gff")
+        write_isoforms(group_df, paste0(session_hard_tmp, name, ".gff"), "gff", cut=TRUE)
         igvShiny::loadGffTrackUrl(
           session,
           trackName = name$name,
