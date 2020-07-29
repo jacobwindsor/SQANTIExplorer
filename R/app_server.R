@@ -260,11 +260,8 @@ app_server <- function( input, output, session ) {
     )
   })
   
-  output$selectGenomeData <- renderUI({
-    validate_classifications(classifications)
-    selectInput("dataset_choice", "Select Data To Visualize: ", choices = classifications() %>% distinct(name) %>% pull(name))
-  })
-  
+  # Genome Browser functionality
+  # ============================
   output$updateButton <- renderUI({
     if(input$tabs == "browser") {
       return(
@@ -278,12 +275,75 @@ app_server <- function( input, output, session ) {
     hr()
   })
   
-  data_to_view <- reactive({
+  output$primaryDataset <- renderUI({
     validate_classifications(classifications)
-    data_to_plot() %>% ungroup() %>% filter(name == input$dataset_choice)
+    div(
+      selectInput("primary_dataset_choice", "Select Data To Visualize: ", choices = classifications() %>% distinct(name) %>% pull(name)),
+      actionButton("select_primary_dataset", "Select Dataset")
+    )
   })
   
-  genome_name <- reactive(data_to_view() %>% distinct(genome) %>% dplyr::first())
+  genome_name <- reactive({
+    data_to_plot() %>% ungroup() %>% filter(name == input$primary_dataset_choice) %>% pull(genome) %>% dplyr::first()
+  })
+  
+  genome_browser_data <- reactiveVal()
+  
+  output$selected_browser_data <- renderTable({
+    validate(need(genome_browser_data(), "Please select data to view."))
+    genome_browser_data() %>% select(name) %>% distinct(name)
+  })
+  
+  output$secondaryDataset <- renderUI({
+    req(genome_browser_data())
+    available_datasets <- classifications() %>% 
+      filter(genome == genome_name(), !name %in% genome_browser_data()[["name"]]) %>% 
+      distinct(name) %>% pull(name)
+
+    if(length(available_datasets) == 0) {
+      return(div())
+    }
+    
+    div(
+      hr(),
+      selectInput(
+        "secondary_dataset_choice",
+        "Add Another Track: ", 
+        choices = available_datasets
+      ),
+      actionButton("add_secondary_dataset", "Add Dataset", icon=icon("add"))
+    )
+  })
+  
+  observeEvent(input$select_primary_dataset, {
+    if(input$select_primary_dataset > 0) {
+      isolate({
+        genome_browser_data(data_to_plot() %>% ungroup() %>% filter(name == input$primary_dataset_choice))
+      })
+    }
+  })
+  
+  observeEvent(input$add_secondary_dataset, {
+    req(genome_browser_data())
+    
+    if(input$add_secondary_dataset > 0) {
+      isolate({
+        genome_browser_data(
+         genome_browser_data() %>%
+           add_row(
+             data_to_plot() %>% ungroup() %>% filter(name == input$secondary_dataset_choice)
+           )
+        )
+      })   
+    }
+  })
+  
+  observeEvent(input$clear_datasets, {
+    if(input$clear_datasets > 0) {
+      genome_browser_data(NULL)
+    }
+  })
+  
   
   output$igv <- renderIgvShiny({
      igvShiny(list(
@@ -293,7 +353,7 @@ app_server <- function( input, output, session ) {
   })
   
   refresh_igv <- function(region) {
-    if(pull(count(data_to_view()), n) == 0) {
+    if(pull(count(genome_browser_data()), n) == 0) {
       golem::invoke_js("showid", "error_igv_msg")
       golem::invoke_js("make_invisible", "igv")
     }
@@ -301,25 +361,30 @@ app_server <- function( input, output, session ) {
       golem::invoke_js("hideid", "error_igv_msg")
       golem::invoke_js("make_invisible", "igv")
       golem::invoke_js("showid", "igv_loading")
-      write_isoforms(data_to_view(), "inst/app/www/temp_beds/temp.gff", "gff", cut=TRUE)
-      igvShiny::loadGffTrackUrl(
-        session,
-        trackName = input$dataset_choice,
-        url = "temp_beds/temp.gff",
-        deleteTracksOfSameName=TRUE,
-        color = color_secondary)
+      
+      genome_browser_data() %>% group_by(name) %>% group_map(function(group_df, name) {
+        tmp_filename <- paste0("temp_beds/", name, ".gff")
+        write_isoforms(group_df, paste0("inst/app/www/", tmp_filename), "gff", cut=TRUE)
+        igvShiny::loadGffTrackUrl(
+          session,
+          trackName = name$name,
+          url = tmp_filename,
+          deleteTracksOfSameName=TRUE,
+          color = color_secondary)
+      })
+      
       igvShiny::showGenomicRegion(session, region)
       golem::invoke_js("make_visible", "igv")
       golem::invoke_js("hideid", "igv_loading")
     }
   }
   
-  observeEvent(input$renderIgv, {
-    if(input$renderIgv == 1) {
+  observeEvent(input$render_igv, {
+    if(input$render_igv == 1) {
       golem::invoke_js("hideid", "load_genome_msg")
     }
-    if(input$renderIgv > 0) {
-      igvShiny::loadGenome(session, list(genomeName = data_to_view() %>% distinct(genome) %>% dplyr::first()))
+    if(input$render_igv > 0) {
+      igvShiny::loadGenome(session, list(genomeName = genome_browser_data() %>% distinct(genome) %>% dplyr::first()))
       refresh_igv("all")
     }
   })

@@ -91,10 +91,23 @@ app_ui <- function(request) {
                   )
           ),
           tabItem(tabName="browser",
-                  fluidRow(box(width=12,
-                               uiOutput("selectGenomeData"),
-                               actionButton("renderIgv", "Show Sample"),
-                  )),
+                  fluidRow(
+                    box(
+                      width=6,
+                      collapsible = TRUE,
+                      title="Choose Datasets to Browser",
+                      uiOutput("primaryDataset"),
+                      uiOutput("secondaryDataset")
+                    ),
+                    box(
+                      width=6,
+                      collapsible = TRUE,
+                      title="Selected Datasets",
+                      tableOutput("selected_browser_data"),
+                      actionButton("render_igv", "Render"),
+                      actionButton("clear_datasets", "Clear", icon=icon("trash"))
+                    )
+                  ),
                   fluidRow(
                     id="load_genome_msg",
                     box(
