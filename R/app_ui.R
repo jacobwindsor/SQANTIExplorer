@@ -95,7 +95,7 @@ app_ui <- function(request) {
                     box(
                       width=6,
                       collapsible = TRUE,
-                      title="Choose Datasets to Browser",
+                      title="Choose Datasets to Browse",
                       uiOutput("primaryDataset"),
                       uiOutput("secondaryDataset")
                     ),
