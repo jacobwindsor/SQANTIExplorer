@@ -26,8 +26,8 @@ app_ui <- function(request) {
                          menuItem("Genome Browser", tabName = "browser", icon=icon("dna")),
                          hr(),
                          h4("Filter data: ", style = "margin-left: 1.3rem"),
-                         checkboxInput("polyexonic", "Polyexonic"),
-                         checkboxInput("monoexonic", "Monoexonic"),
+                         checkboxInput("polyexonic", "Only Polyexonic"),
+                         checkboxInput("monoexonic", "Only Monoexonic"),
                          checkboxInput("noRTS", "No RTS"),
                          checkboxInput("noIntraPriming", "No intra-priming"),
                          checkboxInput("allCanonical", "All Canonical SJs"),
@@ -103,9 +103,7 @@ app_ui <- function(request) {
                       width=6,
                       collapsible = TRUE,
                       title="Selected Datasets",
-                      tableOutput("selected_browser_data"),
-                      actionButton("render_igv", "Render"),
-                      actionButton("clear_datasets", "Clear", icon=icon("trash"))
+                      uiOutput("selectedBrowserData")
                     )
                   ),
                   fluidRow(
