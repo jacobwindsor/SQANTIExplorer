@@ -107,13 +107,6 @@ app_ui <- function(request) {
                     )
                   ),
                   fluidRow(
-                    id="load_genome_msg",
-                    box(
-                      width=12,
-                      p("Please select a sample.")
-                    )
-                  ),
-                  fluidRow(
                     id="error_igv_msg",
                     style="display:none",
                     box(

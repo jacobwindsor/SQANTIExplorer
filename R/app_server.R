@@ -350,6 +350,7 @@ app_server <- function( input, output, session ) {
   observeEvent(input$clear_datasets, {
     if(input$clear_datasets > 0) {
       datasets_to_browse(c())
+      golem::invoke_js("make_invisible", "igv")
     }
   })
   
@@ -394,9 +395,6 @@ app_server <- function( input, output, session ) {
   }
   
   observeEvent(input$render_igv, {
-    if(input$render_igv == 1) {
-      golem::invoke_js("hideid", "load_genome_msg")
-    }
     if(input$render_igv > 0) {
       igvShiny::loadGenome(session, list(genomeName = genome_name()))
       refresh_igv("all")
