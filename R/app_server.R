@@ -19,10 +19,10 @@
 app_server <- function( input, output, session ) {
   # Temporary data storage per session
   # ===================================
-  base_tmp <- "tmp_data"
-  resource_path <- paste0("inst/app/www/", base_tmp, "/")
+  base_tmp <- "tmp"
+  resource_path <- paste0("inst/app/www/", base_tmp)
   golem::add_resource_path(base_tmp, resource_path)
-  session_hard_tmp <- paste0(resource_path,  session$token, "/") # Where tmp data is actually stored on disk
+  session_hard_tmp <- paste0(resource_path, "/", session$token, "/") # Where tmp data is actually stored on disk
   session_public_tmp <- paste0(base_tmp, "/", session$token, "/") # The public URL to the tmp data
 
   if(!dir.exists(resource_path)) {
@@ -63,6 +63,14 @@ app_server <- function( input, output, session ) {
   options(shiny.maxRequestSize = 300*1024^2, spinner.color="#2470F0")
   
   classifications <- reactiveVal()
+  
+  observeEvent(input$show_help, {
+    showModal(modalDialog(
+      size="l",
+      includeMarkdown("README.md")
+    ))
+  })
+  
   
   observeEvent(input$addClassification, {
     req(input$classification_file, input$gtf_file, input$name)

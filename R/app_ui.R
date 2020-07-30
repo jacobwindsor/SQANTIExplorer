@@ -16,7 +16,7 @@ app_ui <- function(request) {
     # List the first level UI elements here 
     dashboardPage(skin="red",
       # Application title
-      dashboardHeader(title="SQANTI Explorer"),
+      dashboardHeader(title="SQANTI Explorer", tags$li(class = "dropdown", actionButton("show_help", "", icon=icon("question"), style="margin: .6rem .6em 0 0"))),
       
       # Sidebar with a slider input for number of bins
       dashboardSidebar(width=350,
