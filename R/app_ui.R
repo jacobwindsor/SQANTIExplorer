@@ -33,6 +33,11 @@ app_ui <- function(request) {
                          checkboxInput("allCanonical", "All Canonical SJs"),
                          checkboxInput("minCovGTZero", "min_cov > 0"),
                          checkboxInput("onlyGenes", "Only Genes (does not accumulate values from transcripts)"),
+                         checkboxInput("novelGenes", "Only Novel Genes"),
+                         checkboxInput("annotatedGenes", "Only Annotated Genes"),
+                         checkboxInput("novelTranscripts", "Only Novel Transcripts"),
+                         checkboxInput("annotatedTranscripts", "Only Annotated Transcripts"),
+                         
                          uiOutput("updateButton"),
                          bookmarkButton()
                        )

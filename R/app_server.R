@@ -133,6 +133,22 @@ app_server <- function( input, output, session ) {
       val <- distinct(val, associated_gene, .keep_all = TRUE)
     }
     
+    if (input$novelGenes) {
+      val <- filter(val, novel_gene == "Novel")
+    }
+    
+    if (input$annotatedGenes) {
+      val <- filter(val, novel_gene == "Annotated")
+    }
+    
+    if (input$novelTranscripts) {
+      val <- filter(val, novel_transcript == "Novel")
+    }
+    
+    if (input$annotatedTranscripts) {
+      val <- filter(val, novel_transcript == "Annotated")
+    }
+    
     return(val)
   })
   
