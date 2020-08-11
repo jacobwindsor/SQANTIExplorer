@@ -1,5 +1,5 @@
 # What is SQANTI Explorer?
-SQANTI Explorer provides several data exploration utlities to allow you to explore the isoform classifications provided by SQANTI ([SQANTI paper](https://genome.cshlp.org/content/28/7/1096)). SQANTI Explorer provides live filtering of isoforms, multiple graphs, and an integrated genome browser with [IGV](http://igv.org/). Furthermore, SQANTI Explorer allows for inter-sample analysis with multi-sample graphs and multi-track genome browsing.
+SQANTI Explorer provides several data exploration utlities to allow you to explore the isoform classifications provided by SQANTI ([SQANTI paper](https://genome.cshlp.org/content/28/7/1096)). SQANTI Explorer provides live filtering of isoforms, multiple graphs, and an integrated genome browser with [IGV](http://igv.org/). Furthermore, SQANTI Explorer allows for inter-sample analysis with multi-sample graphs and multi-track genome browsing. If you wish to perform inter-species analysis, SQANTI Explorer provides built-in liftOver supper with [UCSC liftOver](https://genome.ucsc.edu/cgi-bin/hgLiftOver).
 
 # Installation
 If you are viewing this from SQANTI Explorer already, you can skip this section.
@@ -16,6 +16,9 @@ SQANTI Explorer is a [Shiny](https://shiny.rstudio.com/) app and is distributed 
 - Select the SQANTI classification file and its corresponding GTF file
 - Give the dataset a unique name
 - Select the genome required from the dropdown
+- If you wish to perform a liftOver (for inter-species analysis) then upload a chain file.
+  - You can download chain files from the [UCSC server](http://hgdownload.soe.ucsc.edu/downloads.html)
+  - Note that you must select the **target**^ genome from the genome dropdown that you want to **liftOver to**.
 - Click "Add Classification File" and after a short wait time your dataset will appear in the table on the right
 - Repeat this for as many datasets as you wish to analyze.
 
