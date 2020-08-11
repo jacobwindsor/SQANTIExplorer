@@ -92,6 +92,7 @@ write_isoforms <- function(data, filename, type = "gtf", cut=FALSE) {
   }
   filtered_transcripts <- subset(orig_transcripts, transcript_id %in% transcripts_in_data)
   # If a liftOver chain file is given, then perform liftOver before writing isoforms
+  print(chain_file)
   if(chain_file != "NONE") {
     print("lifting over")
     chain_object <- import.chain(chain_file)

@@ -71,6 +71,10 @@ app_server <- function( input, output, session ) {
     ))
   })
   
+  chain_file <- reactiveVal()
+  observeEvent(input$chain_file, {
+    chain_file(input$chain_file)
+  })
   
   observeEvent(input$addClassification, {
     req(input$classification_file, input$gtf_file, input$name)
@@ -82,7 +86,7 @@ app_server <- function( input, output, session ) {
           name = input$name,
           file = input$classification_file[["name"]],
           gtf_path = input$gtf_file[["datapath"]],
-          chain_file = ifelse(is.null(input$chain_file), "NONE", input$chain_file[["datapath"]]),
+          chain_file = ifelse(is.null(chain_file()), "NONE", chain_file()[["datapath"]]),
           genome = input$genome,
           path = datapath,
           classification = list(read_tsv(datapath))) %>%
@@ -99,6 +103,7 @@ app_server <- function( input, output, session ) {
           classifications(classifications() %>% add_row(new_row))
         }
         
+        chain_file(NULL)
         golem::invoke_js("reset_form", "data-form")
       })
     }
@@ -162,7 +167,7 @@ app_server <- function( input, output, session ) {
       filter((!!as.symbol(input$groupBy)) == d$customdata) %>%
       filter(name %in% sort(unique(data_to_plot()$name))[d$pointNumber + 1])
   })
-  
+
   output$inputTable <-  DT::renderDataTable(DT::datatable({
     validate_classifications(classifications)
     classifications() %>% 
