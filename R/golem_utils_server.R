@@ -76,6 +76,7 @@ rvtl <- shiny::reactiveValuesToList
 # Write isoform files to download
 write_isoforms <- function(data, filename, type = "gtf", cut=FALSE) {
   gtf_file <- data %>% ungroup() %>% distinct(gtf_path)
+  chain_file <- data %>% ungroup() %>% distinct(chain_file) %>% dplyr::first()
   # Ensure data contains only one file
   if (gtf_file %>% count() %>% dplyr::first() > 1) {
     print("Has more than one GTF file in input")
@@ -89,15 +90,22 @@ write_isoforms <- function(data, filename, type = "gtf", cut=FALSE) {
   else {
     transcripts_in_data <- data %>% ungroup() %>% pull(isoform)
   }
-  filtered_gtf <- subset(orig_transcripts, transcript_id %in% transcripts_in_data)
+  filtered_transcripts <- subset(orig_transcripts, transcript_id %in% transcripts_in_data)
+  # If a liftOver chain file is given, then perform liftOver before writing isoforms
+  if(chain_file != "NONE") {
+    print("lifting over")
+    chain_object <- import.chain(chain_file)
+    filtered_transcripts <- unlist(liftOver(filtered_transcripts, chain_object))
+  }
+  
   if(type=="gtf"){
-    return(rtracklayer::export.gff2(filtered_gtf, filename))   
+    return(rtracklayer::export.gff2(filtered_transcripts, filename))   
   }
   if(type=="gff"){
-    return(rtracklayer::export.gff3(filtered_gtf, filename))   
+    return(rtracklayer::export.gff3(filtered_transcripts, filename))   
   }
   if(type=="bed"){
-    return(rtracklayer::export.bed(filtered_gtf, filename))  
+    return(rtracklayer::export.bed(filtered_transcripts, filename))  
   }
 }
 

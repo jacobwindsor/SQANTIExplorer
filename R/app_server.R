@@ -82,6 +82,7 @@ app_server <- function( input, output, session ) {
           name = input$name,
           file = input$classification_file[["name"]],
           gtf_path = input$gtf_file[["datapath"]],
+          chain_file = ifelse(is.null(input$chain_file), "NONE", input$chain_file[["datapath"]]),
           genome = input$genome,
           path = datapath,
           classification = list(read_tsv(datapath))) %>%
@@ -97,6 +98,8 @@ app_server <- function( input, output, session ) {
         else {
           classifications(classifications() %>% add_row(new_row))
         }
+        
+        golem::invoke_js("reset_form", "data-form")
       })
     }
   })
@@ -401,8 +404,10 @@ app_server <- function( input, output, session ) {
       
       genome_browser_data %>% group_by(name) %>% group_map(function(group_df, name) {
         tmp_filename <- paste0(session_public_tmp, name, ".gff")
+        
         write_isoforms(
-          group_df, paste0(session_hard_tmp, name, ".gff"), "gff", cut=TRUE)
+          group_df, paste0(session_hard_tmp, name, ".gff"), "gff", cut=TRUE
+        )
         
         igvShiny::loadGffTrackUrl(
           session,

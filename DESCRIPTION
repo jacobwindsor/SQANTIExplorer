@@ -29,7 +29,8 @@ Imports:
     DT,
     glue,
     htmltools,
-    Rhtslib
+    Rhtslib,
+    liftOver
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

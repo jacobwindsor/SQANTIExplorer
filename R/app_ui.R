@@ -46,14 +46,25 @@ app_ui <- function(request) {
         tabItems(
           tabItem(tabName="data",
                   fluidRow(
-                    box(
+                    box(id="data-form",
                       title="Add Classification Files",
                       fileInput("classification_file", with_red_star("Classification File: "), accept = c(".txt")),
                       fileInput("gtf_file", with_red_star("GTF (GFF v2) File: "), accept = c(".gtf")),
                       textInput("name", with_red_star("Name: ")),
                       hr(),
-                      h4("Genome (only required for genome browser)"),
-                      selectInput("genome", label="Genome: ", choices=igvShiny::getSupportedGenomes()),
+                      h4("Genome"),
+                      selectInput("genome", label=with_red_star("Genome: "), choices=igvShiny::getSupportedGenomes()),
+                      hr(),
+                      h4("Perform liftOver"),
+                      fileInput("chain_file", "Chain File", accept = c(".chain")),
+                      HTML("
+                        <p>
+                          <small>Chain (liftOver) files can be downloaded from <a href=\"http://hgdownload.soe.ucsc.edu/downloads.html\" target=\"_blank\">UCSC here</a>.</small>
+                        </p>
+                        <p><small><strong>Note: </strong> select the genome that you want to liftOver to in the genome dropdown.</small></p>
+                      "),
+                      
+                      hr(),
                       actionButton("addClassification", label = "Add Classification File"),
                       hr(),
                       with_red_star("required field = ")
