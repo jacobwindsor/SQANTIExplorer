@@ -38,7 +38,7 @@ golem::add_dockerfile(
     CRAN = 'https://cran.rstudio.com',
     CRAN = 'https://bioconductor.org/packages/3.11/data/annotation',
     CRAN = 'https://bioconductor.org/packages/3.11/data/experiment',
-    CRAN = 'https://bioconductor.org/packages/3.10/workflows'
+    CRAN = 'https://bioconductor.org/packages/3.11/workflows'
   )
 )
 
@@ -55,6 +55,6 @@ golem::add_dockerfile_heroku(
     CRAN = 'https://cran.rstudio.com',
     CRAN = 'https://bioconductor.org/packages/3.11/data/annotation',
     CRAN = 'https://bioconductor.org/packages/3.11/data/experiment',
-    CRAN = 'https://bioconductor.org/packages/3.10/workflows'
+    CRAN = 'https://bioconductor.org/packages/3.11/workflows'
   )
 )
