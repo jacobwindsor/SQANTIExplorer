@@ -1,4 +1,4 @@
-inst/app/www/tmp_data/
+inst/app/www/tmp/
 shiny_bookmarks/
 .Rhistory
 .RData
