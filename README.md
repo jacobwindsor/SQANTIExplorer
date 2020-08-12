@@ -1,5 +1,5 @@
 # What is SQANTI Explorer?
-SQANTI Explorer provides several data exploration utlities to allow you to explore the isoform classifications provided by SQANTI ([SQANTI paper](https://genome.cshlp.org/content/28/7/1096)). SQANTI Explorer provides live filtering of isoforms, multiple graphs, and an integrated genome browser with [IGV](http://igv.org/). Furthermore, SQANTI Explorer allows for inter-sample analysis with multi-sample graphs and multi-track genome browsing. If you wish to perform inter-species analysis, SQANTI Explorer provides built-in liftOver supper with [UCSC liftOver](https://genome.ucsc.edu/cgi-bin/hgLiftOver).
+SQANTI Explorer provides several data exploration utlities to allow you to explore the isoform classifications provided by SQANTI ([SQANTI paper](https://genome.cshlp.org/content/28/7/1096)). SQANTI Explorer provides live filtering of isoforms, multiple graphs, and an integrated genome browser with [IGV](http://igv.org/). Furthermore, SQANTI Explorer allows for inter-sample analysis with multi-sample graphs and multi-track genome browsing. If you wish to perform inter-species analysis, SQANTI Explorer provides built-in liftOver support with [UCSC liftOver](https://genome.ucsc.edu/cgi-bin/hgLiftOver).
 
 # Installation
 If you are viewing this from SQANTI Explorer already, you can skip this section.
